@@ -20,7 +20,6 @@ useEffect(() => {
     const socket = getSocket(); 
     if (socket) {
         socket.on("receive-message", ({ message }) => {
-            console.log("📩 New message received:", message);
             dispatch({ type: "chat/addMessage", payload:  message  });
         }); 
     }
@@ -63,7 +62,7 @@ useEffect(() => {
                     messages.map((message, index) => (
                         <div
                             key={index}
-                            className={`chat ${message.senderId == authUser?.id ? "chat-end" : "chat-start"}`}
+                            className={`chat ${message.senderId == authUser?.id ? "chat-end " : "chat-start"}`}
 
                         >
                             <div className=" chat-image avatar">
@@ -83,7 +82,7 @@ useEffect(() => {
                                     {formatMessageTime(message.createdAt)}
                                 </time>
                             </div>
-                            <div className="chat-bubble flex flex-col max-w-xs break-words">
+                            <div className="chat-bubble bg-primary text-primary-content flex flex-col max-w-xs break-words">
                                 {message.image && (
                                     <img
                                         src={message.image}

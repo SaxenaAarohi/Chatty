@@ -1,11 +1,8 @@
 "use client"
 import { Geist, Geist_Mono } from "next/font/google";
-import { Provider } from "react-redux";
-import { ToastContainer } from "react-toastify";
-import Navbar from "../Components/Navbar";
-import store from "../store/store";
+import ThemeProvider from "../lib/Themecontext.js";
 import "./globals.css";
-import { useEffect, useState } from "react";
+import InnerLayout from "./InnerLayout.js";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,28 +21,16 @@ const geistMono = Geist_Mono({
 
 export default function RootLayout({ children }) {
 
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Provider store={store}>
+        <ThemeProvider>
+          <InnerLayout>{children}</InnerLayout>
+        </ThemeProvider>
 
-          <Navbar />
-          {children}
-          <ToastContainer position="top-center"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick={false}
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="dark"
-          />
-
-        </Provider>
       </body>
     </html>
   );

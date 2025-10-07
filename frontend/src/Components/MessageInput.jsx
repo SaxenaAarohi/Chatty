@@ -126,7 +126,7 @@ export default function MessageInput() {
 
                     <div className="relative inline-block">
 
-                        <button className="pt-3" type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><Smile /></button>
+                        <button className="pt-3" type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><Smile   size={20}/></button>
 
                         <div className={`absolute bottom-full w-20 mb-2 z-50 ${showEmojiPicker ? 'block' : 'hidden'}`}>
                             <emoji-picker id="emojiPicker" ref={emojiPickerRef}></emoji-picker>

@@ -27,15 +27,15 @@ export const getuserforsidebar = async (req, res) => {
 export const getmessages = async (req, res) => {
     try {
   
-        const { id: userToChatId } = req.params;
+        const { id } = req.params;
       
         const myId = req.user.id;
   
         const messages = await prismaclient.message.findMany({
             where: {
                 OR: [
-                    { senderId: myId, receiverId: userToChatId },
-                    { senderId: userToChatId, receiverId: myId }
+                    { senderId: myId, receiverId: id },
+                    { senderId: id, receiverId: myId }
                 ]
             },
             orderBy: {
@@ -53,7 +53,7 @@ export const sendmessage = async (req, res) => {
 
     try {
         const { text, image } = req.body;
-        const { id: recevierid } = req.params;
+        const { id} = req.params;
         const senderId = req?.user.id;
 
         let imgurl;
@@ -73,7 +73,7 @@ export const sendmessage = async (req, res) => {
         const newmwssgae = await prismaclient.message.create({
             data: {
                 senderId,
-                receiverId: recevierid,
+                receiverId: id,
                 text,
                 image: imgurl,
             }
