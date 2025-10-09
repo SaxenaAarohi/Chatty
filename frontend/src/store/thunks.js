@@ -1,4 +1,4 @@
-import { getSocket } from "@/lib/socket";
+import { getSocket } from "../lib/socket";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 export const checkAuth = createAsyncThunk(
@@ -87,6 +87,7 @@ export const updateprofileThunk = createAsyncThunk(
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({ profilepic }),
       });
 
@@ -101,6 +102,11 @@ export const updateprofileThunk = createAsyncThunk(
 
 )
 
+
+
+// export const userprofile = () => {
+//   const updatedprofile
+// }
 
 //messgaes thunk
 
@@ -154,7 +160,7 @@ export const getMessages = createAsyncThunk(
       return data;
     }
     catch (error) {
-      return ;
+      return;
     }
   }
 
@@ -168,14 +174,28 @@ export const sendMessage = createAsyncThunk(
 
     const selectedUser = state.chat.selectedUser;
     const authUser = state.auth.authUser;
-   
+
     const id = selectedUser.id;
 
     try {
+
+      const formData = new FormData();
+
+      if (messageData.text?.trim()) {
+        formData.append("text", messageData.text.trim());
+      }
+
+      if (messageData.image) {
+        formData.append("image", messageData.image); // must be a File object
+      }
+
+      if (messageData.video) {
+        formData.append("video", messageData.video); // must be a File object
+      }
+
       const res = await fetch(`http://localhost:3000/api/messages/send/${id}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(messageData),
+        body: formData,
         credentials: 'include',
       });
 
@@ -186,13 +206,13 @@ export const sendMessage = createAsyncThunk(
 
       const data = await res.json();
 
-   thunkAPI.dispatch({
-      type: "chat/addMessage",
-      payload:data ,
-    });
+      thunkAPI.dispatch({
+        type: "chat/addMessage",
+        payload: data,
+      });
 
 
-    const socket = getSocket();
+      const socket = getSocket();
 
       if (socket && socket.connected) {
         socket.emit("send-message", {

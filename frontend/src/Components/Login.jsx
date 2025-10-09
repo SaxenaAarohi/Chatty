@@ -5,7 +5,7 @@ import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { loginThunk } from "../store/thunks";
 import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
+import toast from 'react-hot-toast';
 
 export default function Login() {
 
@@ -22,10 +22,10 @@ export default function Login() {
         e.preventDefault();
         const result = await dispatch(loginThunk(formData));
         if (loginThunk.fulfilled.match(result)) {
-            toast('Logged in successful!y');
+            toast.success('Logged in successful!y');
             router.push('/');
         } else {
-            toast(result.payload || 'Login failed');
+            toast.error(result.payload || 'Login failed');
         }
     }
 

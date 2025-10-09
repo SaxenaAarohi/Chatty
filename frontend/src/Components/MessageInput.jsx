@@ -1,11 +1,11 @@
 "use client"
-import { sendMessage } from "@/store/thunks";
-import { Send, Smile } from "lucide-react";
-import { Image } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { sendMessage } from "../store/thunks";
 import 'emoji-picker-element';
+import { Image, Send, Smile } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
+import toast from "react-hot-toast";
 export default function MessageInput() {
 
     const dispatch = useDispatch();
@@ -13,6 +13,8 @@ export default function MessageInput() {
     const [text, setText] = useState("");
     const [imagePreview, setImagePreview] = useState(null);
     const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+    const [videopreview, setVideoPreview] = useState(null);
+    const [videoFile, setVideoFile] = useState(null);
 
     const authUser = useSelector((state) => state.auth.user);
     const selectedUser = useSelector((state) => state.chat.selectedUser);
@@ -54,7 +56,7 @@ export default function MessageInput() {
     const handleSendMessage = async (e) => {
         e.preventDefault();
 
-        if (!text.trim() && !imagePreview) return;
+        if (!text.trim() && !imagePreview && !videopreview) return;
 
         try {
 
@@ -62,11 +64,13 @@ export default function MessageInput() {
                 {
                     text: text.trim(),
                     image: imagePreview,
+                    video: videoFile,
                 }
             ));
 
             setText("");
             setImagePreview(null);
+            setVideoPreview(null);
 
             if (fileInputRef.current) fileInputRef.current.value = "";
 
@@ -75,26 +79,56 @@ export default function MessageInput() {
         }
     };
 
+    useEffect(() => {
+        return () => {
+            if (videopreview) {
+                URL.revokeObjectURL(videopreview);
+            }
+        };
+    }, [videopreview]);
 
+    const handleMediaChange = (e) => {
 
-    const handleImageChange = (e) => {
         const file = e.target.files[0];
-        if (!file?.type?.startsWith("image/")) {
-            toast.error("Please select an image file");
+
+        const isimage = file?.type?.startsWith("image/");
+        const isvideo = file?.type?.startsWith("video/");
+
+        if (!isimage && !isvideo) {
+            toast.error("Please select an image or video file");
             return;
         }
 
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImagePreview(reader.result);
-        };
-        reader.readAsDataURL(file);
+        if (isimage) {
+
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+        else if (isvideo) {
+
+            const url = URL.createObjectURL(file);
+            setVideoPreview(url);;
+            setVideoFile(file);
+
+
+        }
+        else {
+            toast.error("File type not supported");
+        }
     };
 
 
 
     const removeImage = () => {
         setImagePreview(null);
+        if (fileInputRef.current) fileInputRef.current.value = "";
+    };
+
+    const removevideo = () => {
+        setVideoPreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
     };
 
@@ -121,12 +155,33 @@ export default function MessageInput() {
                 </div>
             )}
 
+            {videopreview && (
+                <div className="mb-3 flex items-center gap-2">
+                    <div className="relative">
+                        <video
+                            src={videopreview}
+                            className="w-20 h-20 object-cover rounded-lg border border-zinc-700"
+                            controls
+                        />
+                        <button
+                            onClick={removevideo}
+                            className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
+              flex items-center justify-center"
+                            type="button"
+                        >
+                            X
+                        </button>
+                    </div>
+                </div>
+            )}
+
+
             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                 <div className="flex-1 flex gap-2">
 
                     <div className="relative inline-block">
 
-                        <button className="pt-3" type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><Smile   size={20}/></button>
+                        <button className="mt-1 btn btn-circle" type="button" onClick={() => setShowEmojiPicker(!showEmojiPicker)}><Smile size={20} /></button>
 
                         <div className={`absolute bottom-full w-20 mb-2 z-50 ${showEmojiPicker ? 'block' : 'hidden'}`}>
                             <emoji-picker id="emojiPicker" ref={emojiPickerRef}></emoji-picker>
@@ -143,10 +198,10 @@ export default function MessageInput() {
                     />
                     <input
                         type="file"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         className="hidden"
                         ref={fileInputRef}
-                        onChange={handleImageChange}
+                        onChange={handleMediaChange}
                     />
 
                     <button
@@ -160,10 +215,10 @@ export default function MessageInput() {
                 </div>
                 <button
                     type="submit"
-                    className="btn btn-sm btn-circle"
-                    disabled={!text.trim() && !imagePreview}
+                    className="btn  btn-circle  "
+                    disabled={!text.trim() && !imagePreview && !videopreview}
                 >
-                    <Send size={22} />
+                    <Send size={20} />
                 </button>
             </form>
         </div>

@@ -18,7 +18,8 @@ const io = new Server(server, {
 let onlineUsers = {};
 let userSockets = {};
 
- io.on("connection", (socket) => {
+
+io.on("connection", (socket) => {
     console.log("A user connected with socket id:", socket.id);
 
     socket.on("user-connected", (userid) => {
@@ -41,8 +42,20 @@ let userSockets = {};
         }
     });
 
-     socket.on("disconnect", () => {
-       console.log("A user disconnected with socket id:", socket.id);
+    socket.on("draw", ({ x, y }) => {
+        socket.broadcast.emit("draw", { x, y });
+    });
+
+    socket.on("down", ({ x, y }) => {
+        socket.broadcast.emit("down", { x, y });
+    });
+
+    // socket.on("undo", (userId) => {
+    //  socket.broadcast.emit("undo",userId);
+    // })
+
+    socket.on("disconnect", () => {
+        console.log("A user disconnected with socket id:", socket.id);
         const userid = onlineUsers[socket.id];
 
         if (userid) {
@@ -51,7 +64,7 @@ let userSockets = {};
         delete onlineUsers[socket.id];
         io.emit("update-user-list", Object.values(onlineUsers));
     });
- });
+});
 
 
- export { io, app, server };
+export { io, app, server };

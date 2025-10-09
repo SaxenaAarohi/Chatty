@@ -1,5 +1,5 @@
 "use client"
-import { setSelectedUser } from "@/store/chatSlice";
+import { setSelectedUser } from "../store/chatSlice";
 import { Users } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import SidebarSkeleton from "./Skeleton/SidebarSkeleton";

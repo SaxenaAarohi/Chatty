@@ -92,14 +92,14 @@ export const updateprofile = async (req, res) => {
     try {
         const { profilepic } = req.body;
         const userid = req.user.id;
-
+     
         if (!profilepic) {
             return res.status(400).json({ messgae: "Profile pic is required" });
         }
 
         const uploadResponse = await cloudinary.uploader.upload(profilepic);
 
-        const updatedUser = await prismaclient.User.update({
+        const updatedUser = await prismaclient.user.update({
             where: { id: userid },
             data: { profilepic: uploadResponse.secure_url },
         });

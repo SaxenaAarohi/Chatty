@@ -1,35 +1,11 @@
 "use client"
 
-import ChatContainer from "@/Components/ChatContainer";
-import NoChatSelected from "@/Components/NoChatSelected";
-import Sidebar from "@/Components/Sidebar";
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { checkAuth, fetchUsers } from "../store/thunks";
-import { connectSocket, disconnectSocket } from "@/lib/socket";
+import ChatContainer from "../Components/ChatContainer";
+import NoChatSelected from "../Components/NoChatSelected";
+import Sidebar from "../Components/Sidebar";
+import { useSelector } from "react-redux";
 
 export default function Home() {
-
-  const authUser = useSelector((state) => state.auth.authUser);
-  const dispatch = useDispatch();
-  
-  useEffect(()=>{
-    dispatch(checkAuth());
-  },[checkAuth]);
-
-  useEffect(() => {
-    dispatch(fetchUsers());
-  },[fetchUsers]);
-
-  useEffect(() => {
-    if (authUser && authUser.id) {
-      connectSocket(authUser.id,dispatch);
-    }
-
-    return () => {
-      disconnectSocket();
-    };
-  },[authUser?.id]);
 
     const selectedUser = useSelector((state) => state.chat.selectedUser);
   

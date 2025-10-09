@@ -1,15 +1,18 @@
-import { setSelectedUser } from "@/store/chatSlice";
+"use client"
+import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 
 export default function ChatHeader() {
 
     const {onlineUsers} = useSelector((state) => state.auth);
 
+    const router = useRouter();
+
     const { selectedUser } = useSelector((state) => state.chat);
     const dispatch = useDispatch();
 
-    function handleclose() {
-        dispatch(setSelectedUser(null));
+    function handleboard() {
+        router.push("/drawingboard");
     }
 
     return (
@@ -33,8 +36,8 @@ export default function ChatHeader() {
                 </div>
 
 
-                <button onClick={handleclose}>
-                    x
+                <button className="bg-primary text-sm mr-4 text-primary-content p-2 rounded-sm" onClick={handleboard}>
+                    Start Drawing
                 </button>
             </div>
         </div>

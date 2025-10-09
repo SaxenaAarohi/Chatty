@@ -55,7 +55,7 @@ const authSlice = createSlice({
       .addCase(updateprofileThunk.pending, (state) => {
         state.isUpdatingProfile = true;
       })
-      .addCase(updateprofileThunk.fulfilled, (state) => {
+      .addCase(updateprofileThunk.fulfilled, (state,action) => {
         state.isUpdatingProfile = false;
         state.authUser = action.payload;
       })

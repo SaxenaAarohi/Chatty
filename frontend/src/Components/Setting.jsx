@@ -1,10 +1,8 @@
 "use client"
-import { useEffect, useState } from "react";
-import { THEMES } from "../constants/themes";
+import { useTheme } from "../lib/Themecontext";
 import { Send } from "lucide-react";
-import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
-import { useTheme } from "@/lib/Themecontext";
+import { useState } from "react";
+import { THEMES } from "../constants/themes";
 
 export default function Setting() {
 
@@ -21,7 +19,7 @@ export default function Setting() {
         <div className="flex flex-col gap-1">
           <div className="flex justify-between items-center">
             <h2 className="text-lg font-semibold">Theme</h2>
-            <button className="btn btn-sm bg-primary text-primary-content ml-[40%]" onClick={() => changeTheme(Theme)}>Save Theme</button>
+            <button className="text-sm p-2 bg-primary rounded-sm text-primary-content ml-[40%]" onClick={() => changeTheme(Theme)}>Save Theme</button>
           </div>
           <p className="text-sm text-base-content/70">Choose a theme for your chat interface</p>
         </div>

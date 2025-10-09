@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { signupThunk } from "../store/thunks";
 
 export default function Signup() {
@@ -39,10 +39,10 @@ export default function Signup() {
         if (success) {
             const result = await dispatch(signupThunk(formData));
             if (signupThunk.fulfilled.match(result)) {
-                toast('Signup successful!');
+                toast.success('Signup successful!');
                 router.push('/');
             } else {
-                toast(result.payload || 'Signup failed');
+                toast.error(result.payload || 'Signup failed');
             }
         }
     }

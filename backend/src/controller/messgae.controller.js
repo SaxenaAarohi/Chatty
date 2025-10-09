@@ -26,11 +26,11 @@ export const getuserforsidebar = async (req, res) => {
 
 export const getmessages = async (req, res) => {
     try {
-  
+
         const { id } = req.params;
-      
+
         const myId = req.user.id;
-  
+
         const messages = await prismaclient.message.findMany({
             where: {
                 OR: [
@@ -52,11 +52,15 @@ export const getmessages = async (req, res) => {
 export const sendmessage = async (req, res) => {
 
     try {
-        const { text, image } = req.body;
+        const { text,image} = req.body;
         const { id} = req.params;
+    
+        const video= req?.file?.path;
+
         const senderId = req?.user.id;
 
         let imgurl;
+        let videourl;
 
         if (image) {
 
@@ -68,14 +72,27 @@ export const sendmessage = async (req, res) => {
                 console.error("Cloudinary upload error:", err);
             }
 
-        }
+        };
+  
+        if(video){
+            try{
+                const uploadresponse = await cloudinary.uploader.upload(video, { resource_type: "video" });
+                videourl = uploadresponse.secure_url;
+                console.log("Uploaded video:", videourl);
+            }
+            catch(err){
+                console.error("Cloudinary upload error:", err);
+            }
+        };
+
 
         const newmwssgae = await prismaclient.message.create({
             data: {
                 senderId,
                 receiverId: id,
                 text,
-                image: imgurl,
+                image: imgurl || null,
+                video : videourl || null,
             }
         });
 

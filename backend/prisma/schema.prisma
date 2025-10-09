@@ -27,6 +27,7 @@ model message {
   id         String   @id @default(auto()) @map("_id") @db.ObjectId
   text       String?
   image      String?
+  video      String?
   createdAt  DateTime @default(now())
   senderId   String   @db.ObjectId
   sender     User     @relation("SentMessages", fields: [senderId], references: [id])

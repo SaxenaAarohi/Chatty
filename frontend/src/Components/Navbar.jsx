@@ -4,7 +4,7 @@ import { LogOut, MessageSquare, Settings, User } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 export default function Navbar() {
 
@@ -16,7 +16,7 @@ export default function Navbar() {
     const logoutfun = async () => {
 
         const result = await dispatch(logoutThunk());
-         toast('Logout successful!y');
+         toast.success('Logout successful!y');
                     router.push('/login');
         //  if (logoutThunk.fulfilled.match(result)) {
                    
@@ -46,7 +46,7 @@ export default function Navbar() {
                             href={"/settings"}
                             className={`
               btn btn-sm gap-2 transition-colors  text-primary
-              
+              rounded-sm
               `}
                         >
                             <Settings className="w-4 h-4" />
@@ -55,12 +55,12 @@ export default function Navbar() {
 
                         {authUser && (
                             <>
-                                <Link href="/profile" className={`btn  text-primary btn-sm gap-2`}>
+                                <Link href="/profile" className={`btn  rounded -sm text-primary btn-sm gap-2`}>
                                     <User className="size-5" />
                                     <span className="hidden  sm:inline">{authUser?.fullname}</span>
                                 </Link>
 
-                                <button className="btn  text-primary  btn-sm gap-2" onClick={logoutfun} >
+                                <button className="btn  text-primary rounded-sm  btn-sm gap-2" onClick={logoutfun} >
                                     <LogOut className="size-5" />
                                     <span className="hidden sm:inline">Logout</span>
                                 </button>

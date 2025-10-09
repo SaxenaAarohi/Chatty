@@ -1,37 +1,37 @@
 "use client"
 import { useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const ThemeContext = createContext();
 
- const ThemeProvider = ({ children }) => {
+const ThemeProvider = ({ children }) => {
 
-    const router = useRouter();
-  const [theme, setTheme] = useState("dark");    
-  
+  const router = useRouter();
+  const [theme, setTheme] = useState("dark");
+
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme") || "dark";
     setTheme(savedTheme);
     document.documentElement.setAttribute("data-theme", savedTheme);
-  },[]);
+  }, []);
 
-  function changeTheme(newTheme)  {
-        router.push("/");
+  function changeTheme(newTheme) {
+    router.push("/");
     setTheme(newTheme);
     localStorage.setItem("theme", newTheme);
-        toast ("Theme changed");
+    toast.success("Theme changed");
     document.documentElement.setAttribute("data-theme", newTheme);
   }
 
-  return ( 
+  return (
     <ThemeContext.Provider value={{ theme, changeTheme }}>
       {children}
     </ThemeContext.Provider>
-   )
+  )
 
 };
 
-export const useTheme = () =>  useContext(ThemeContext);
+export const useTheme = () => useContext(ThemeContext);
 
 export default ThemeProvider;
